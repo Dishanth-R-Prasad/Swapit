@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => ({
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   optimizeDeps: {
-    exclude: ['react-tinder-card'],
+    include: ['react-tinder-card', '@react-spring/web', '@use-gesture/react'],
   },
   resolve: {
     alias: {
