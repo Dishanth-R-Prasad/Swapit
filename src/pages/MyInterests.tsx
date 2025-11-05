@@ -169,7 +169,7 @@ const MyInterests = () => {
                       </span>
                     </div>
                   )}
-                  <div className="border-t border-border pt-4">
+                  <div className="border-t border-border pt-4 space-y-2">
                     <p className="text-sm font-medium mb-1">Contact Seller</p>
                     {interest.item.profiles?.full_name && (
                       <p className="text-sm text-muted-foreground">
@@ -179,11 +179,30 @@ const MyInterests = () => {
                     {interest.item.profiles?.email && (
                       <a
                         href={`mailto:${interest.item.profiles.email}`}
-                        className="text-sm text-primary hover:underline"
+                        className="text-sm text-primary hover:underline block"
                       >
                         {interest.item.profiles.email}
                       </a>
                     )}
+                    <Button
+                      className="w-full mt-2"
+                      onClick={() => {
+                        const sellerId = interest.item.id;
+                        // Get the user_id from the item
+                        supabase
+                          .from('items')
+                          .select('user_id')
+                          .eq('id', sellerId)
+                          .single()
+                          .then(({ data }) => {
+                            if (data?.user_id) {
+                              navigate(`/chat/${data.user_id}`);
+                            }
+                          });
+                      }}
+                    >
+                      Send Message
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
