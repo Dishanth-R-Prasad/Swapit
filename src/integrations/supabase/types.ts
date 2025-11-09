@@ -59,6 +59,7 @@ export type Database = {
           city: string | null
           created_at: string | null
           description: string | null
+          estimated_value: number | null
           id: string
           is_donation: boolean | null
           latitude: number | null
@@ -76,6 +77,7 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           description?: string | null
+          estimated_value?: number | null
           id?: string
           is_donation?: boolean | null
           latitude?: number | null
@@ -93,6 +95,7 @@ export type Database = {
           city?: string | null
           created_at?: string | null
           description?: string | null
+          estimated_value?: number | null
           id?: string
           is_donation?: boolean | null
           latitude?: number | null

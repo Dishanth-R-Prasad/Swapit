@@ -1,1 +1,10 @@
 project_id = "mvcuslgnzotnnzpwmrij"
+
+[functions.items]
+verify_jwt = true
+
+[functions.estimate-value]
+verify_jwt = true
+
+[functions.suggest-fair-swaps]
+verify_jwt = true

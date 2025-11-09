@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { Pencil, Trash2, MapPin } from 'lucide-react';
+import { ValueEstimate } from '@/components/ValueEstimate';
 
 interface Item {
   id: string;
@@ -19,6 +20,7 @@ interface Item {
   photo_url: string | null;
   city: string | null;
   status: string;
+  estimated_value: number | null;
 }
 
 const MyItems = () => {
@@ -149,11 +151,16 @@ const MyItems = () => {
                     </p>
                   )}
                   <div className="flex items-center justify-between mb-4">
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 flex-wrap">
                       <Badge variant="outline">{item.category}</Badge>
                       <Badge variant={item.is_donation ? 'default' : 'secondary'}>
                         {item.is_donation ? 'Free' : `₹${item.price}`}
                       </Badge>
+                      <ValueEstimate 
+                        itemId={item.id} 
+                        currentValue={item.estimated_value}
+                        compact
+                      />
                     </div>
                   </div>
                   {item.city && (

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import TinderCard from 'react-tinder-card';
 import { MapPin, Tag } from 'lucide-react';
 import { Badge } from './ui/badge';
+import { ValueEstimate } from './ValueEstimate';
 
 interface Item {
   id: string;
@@ -13,6 +14,7 @@ interface Item {
   photo_url: string | null;
   city: string | null;
   pincode: string | null;
+  estimated_value?: number | null;
 }
 
 interface SwipeCardProps {
@@ -58,20 +60,23 @@ const SwipeCard = ({ item, onSwipe }: SwipeCardProps) => {
               <Package className="w-24 h-24 text-muted-foreground" />
             </div>
           )}
-          <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
+          <div className="absolute top-4 left-4 right-4 flex justify-between items-start gap-2">
             <Badge className={categoryColors[item.category] || 'bg-gray-100 text-gray-800'}>
               <Tag className="w-3 h-3 mr-1" />
               {item.category}
             </Badge>
-            {item.is_donation ? (
-              <Badge variant="secondary" className="bg-primary text-primary-foreground">
-                Free
-              </Badge>
-            ) : (
-              <Badge variant="secondary" className="bg-background/90">
-                ₹{item.price}
-              </Badge>
-            )}
+            <div className="flex gap-2">
+              <ValueEstimate itemId={item.id} currentValue={item.estimated_value} compact />
+              {item.is_donation ? (
+                <Badge variant="secondary" className="bg-primary text-primary-foreground">
+                  Free
+                </Badge>
+              ) : (
+                <Badge variant="secondary" className="bg-background/90">
+                  ₹{item.price}
+                </Badge>
+              )}
+            </div>
           </div>
         </div>
 

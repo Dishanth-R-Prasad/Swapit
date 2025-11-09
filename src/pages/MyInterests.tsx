@@ -8,6 +8,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
 import { MapPin, X } from 'lucide-react';
+import { TradeComparisonDialog } from '@/components/TradeComparisonDialog';
+import { ValueEstimate } from '@/components/ValueEstimate';
 
 interface Interest {
   id: string;
@@ -21,6 +23,7 @@ interface Interest {
     photo_url: string | null;
     city: string | null;
     pincode: string | null;
+    estimated_value: number | null;
     profiles: {
       full_name: string | null;
       email: string | null;
@@ -58,6 +61,7 @@ const MyInterests = () => {
             photo_url,
             city,
             pincode,
+            estimated_value,
             profiles (
               full_name,
               email
@@ -159,6 +163,11 @@ const MyInterests = () => {
                     <Badge variant={interest.item.is_donation ? 'default' : 'secondary'}>
                       {interest.item.is_donation ? 'Free' : `₹${interest.item.price}`}
                     </Badge>
+                    <ValueEstimate 
+                      itemId={interest.item.id} 
+                      currentValue={interest.item.estimated_value}
+                      compact
+                    />
                   </div>
                   {interest.item.city && (
                     <div className="flex items-center gap-1 text-sm text-muted-foreground mb-4">
@@ -184,25 +193,31 @@ const MyInterests = () => {
                         {interest.item.profiles.email}
                       </a>
                     )}
-                    <Button
-                      className="w-full mt-2"
-                      onClick={() => {
-                        const sellerId = interest.item.id;
-                        // Get the user_id from the item
-                        supabase
-                          .from('items')
-                          .select('user_id')
-                          .eq('id', sellerId)
-                          .single()
-                          .then(({ data }) => {
-                            if (data?.user_id) {
-                              navigate(`/chat/${data.user_id}`);
-                            }
-                          });
-                      }}
-                    >
-                      Send Message
-                    </Button>
+                    <div className="space-y-2 mt-3">
+                      <TradeComparisonDialog 
+                        theirItemId={interest.item.id}
+                        theirItemTitle={interest.item.title}
+                      />
+                      <Button
+                        className="w-full"
+                        onClick={() => {
+                          const sellerId = interest.item.id;
+                          // Get the user_id from the item
+                          supabase
+                            .from('items')
+                            .select('user_id')
+                            .eq('id', sellerId)
+                            .single()
+                            .then(({ data }) => {
+                              if (data?.user_id) {
+                                navigate(`/chat/${data.user_id}`);
+                              }
+                            });
+                        }}
+                      >
+                        Send Message
+                      </Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

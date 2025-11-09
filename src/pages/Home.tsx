@@ -19,6 +19,7 @@ interface Item {
   city: string | null;
   pincode: string | null;
   user_id: string;
+  estimated_value?: number | null;
 }
 
 const Home = () => {
