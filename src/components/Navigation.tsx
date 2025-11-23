@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, PlusCircle, Heart, Package, LogOut, User, MessageSquare } from 'lucide-react';
+import { Home, PlusCircle, Heart, Package, LogOut, User, MessageSquare, Gavel } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from './ui/button';
@@ -18,6 +18,7 @@ const Navigation = () => {
 
   const navItems = [
     { icon: Home, label: 'Home', path: '/' },
+    { icon: Gavel, label: 'Auctions', path: '/auctions' },
     { icon: PlusCircle, label: 'Create', path: '/create' },
     { icon: Heart, label: 'Interests', path: '/interests' },
     { icon: MessageSquare, label: 'Messages', path: '/messages' },

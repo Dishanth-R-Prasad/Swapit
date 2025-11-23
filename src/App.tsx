@@ -7,6 +7,8 @@ import { AuthProvider } from "./hooks/useAuth";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
 import CreateListing from "./pages/CreateListing";
+import Auctions from "./pages/Auctions";
+import AuctionDetail from "./pages/AuctionDetail";
 import MyItems from "./pages/MyItems";
 import MyInterests from "./pages/MyInterests";
 import Profile from "./pages/Profile";
@@ -27,6 +29,8 @@ const App = () => (
             <Route path="/" element={<Home />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/create" element={<CreateListing />} />
+            <Route path="/auctions" element={<Auctions />} />
+            <Route path="/auctions/:id" element={<AuctionDetail />} />
             <Route path="/my-items" element={<MyItems />} />
             <Route path="/interests" element={<MyInterests />} />
             <Route path="/profile" element={<Profile />} />
