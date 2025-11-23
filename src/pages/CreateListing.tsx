@@ -23,6 +23,8 @@ const CreateListing = () => {
   const [pincode, setPincode] = useState('');
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
+  const [isAuction, setIsAuction] = useState(false);
+  const [auctionDays, setAuctionDays] = useState('3');
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -68,6 +70,10 @@ const CreateListing = () => {
         photoUrl = publicUrl;
       }
 
+      const auctionEndDate = isAuction 
+        ? new Date(Date.now() + parseInt(auctionDays) * 24 * 60 * 60 * 1000).toISOString()
+        : null;
+
       const { error } = await supabase.from('items').insert({
         user_id: user.id,
         title,
@@ -79,6 +85,8 @@ const CreateListing = () => {
         city,
         pincode,
         status: 'active',
+        is_auction: isAuction,
+        auction_end_date: auctionEndDate,
       });
 
       if (error) throw error;
@@ -172,6 +180,36 @@ const CreateListing = () => {
                   rows={4}
                 />
               </div>
+
+              <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
+                <div className="space-y-0.5">
+                  <Label htmlFor="auction">List as Auction</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Let users compete with offers
+                  </p>
+                </div>
+                <Switch
+                  id="auction"
+                  checked={isAuction}
+                  onCheckedChange={setIsAuction}
+                />
+              </div>
+
+              {isAuction && (
+                <div className="space-y-2">
+                  <Label htmlFor="auctionDays">Auction Duration</Label>
+                  <Select value={auctionDays} onValueChange={setAuctionDays}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="1">1 day</SelectItem>
+                      <SelectItem value="3">3 days</SelectItem>
+                      <SelectItem value="7">7 days</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
 
               <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
                 <div className="space-y-0.5">

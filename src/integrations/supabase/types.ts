@@ -55,12 +55,14 @@ export type Database = {
       }
       items: {
         Row: {
+          auction_end_date: string | null
           category: string
           city: string | null
           created_at: string | null
           description: string | null
           estimated_value: number | null
           id: string
+          is_auction: boolean | null
           is_donation: boolean | null
           latitude: number | null
           longitude: number | null
@@ -73,12 +75,14 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          auction_end_date?: string | null
           category: string
           city?: string | null
           created_at?: string | null
           description?: string | null
           estimated_value?: number | null
           id?: string
+          is_auction?: boolean | null
           is_donation?: boolean | null
           latitude?: number | null
           longitude?: number | null
@@ -91,12 +95,14 @@ export type Database = {
           user_id: string
         }
         Update: {
+          auction_end_date?: string | null
           category?: string
           city?: string | null
           created_at?: string | null
           description?: string | null
           estimated_value?: number | null
           id?: string
+          is_auction?: boolean | null
           is_donation?: boolean | null
           latitude?: number | null
           longitude?: number | null
@@ -152,6 +158,58 @@ export type Database = {
             columns: ["item_id"]
             isOneToOne: false
             referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      offers: {
+        Row: {
+          auction_listing_id: string
+          created_at: string | null
+          id: string
+          message: string | null
+          offered_item_id: string
+          offerer_user_id: string
+          status: string | null
+        }
+        Insert: {
+          auction_listing_id: string
+          created_at?: string | null
+          id?: string
+          message?: string | null
+          offered_item_id: string
+          offerer_user_id: string
+          status?: string | null
+        }
+        Update: {
+          auction_listing_id?: string
+          created_at?: string | null
+          id?: string
+          message?: string | null
+          offered_item_id?: string
+          offerer_user_id?: string
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "offers_auction_listing_id_fkey"
+            columns: ["auction_listing_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offers_offered_item_id_fkey"
+            columns: ["offered_item_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "offers_offerer_user_id_fkey"
+            columns: ["offerer_user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -237,6 +295,7 @@ export type Database = {
         Args: { item_category: string }
         Returns: number
       }
+      seed_auction_items: { Args: never; Returns: undefined }
       seed_mock_products: { Args: never; Returns: undefined }
       seed_mock_users: { Args: never; Returns: undefined }
     }
