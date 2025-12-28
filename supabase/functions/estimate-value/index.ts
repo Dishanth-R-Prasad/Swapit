@@ -47,22 +47,22 @@ Deno.serve(async (req) => {
     }
 
     // Use AI to estimate the value
-    const prompt = `You are a fair trade value estimator. Analyze this item and provide an estimated market value in USD.
+    const prompt = `You are a fair trade value estimator. Analyze this item and provide an estimated market value in Indian Rupees (INR).
 
 Item Details:
 - Title: ${item.title}
 - Category: ${item.category}
 - Description: ${item.description || 'No description provided'}
-- Listed Price: ${item.price ? '$' + item.price : 'Not specified'}
+- Listed Price: ${item.price ? '₹' + item.price : 'Not specified'}
 - Condition: ${item.is_donation ? 'Free/Donation' : 'For Trade'}
 
 Consider:
-1. Current market prices for similar items
+1. Current market prices for similar items in India
 2. Category-specific depreciation
 3. Condition indicators from description
 4. Whether it's listed as donation (which might indicate lower value)
 
-Respond with ONLY a number (the estimated value in USD). No currency symbols, no text, just the number.`;
+Respond with ONLY a number (the estimated value in INR). No currency symbols, no text, just the number.`;
 
     const aiResponse = await fetch('https://ai.gateway.lovable.dev/v1/chat/completions', {
       method: 'POST',
