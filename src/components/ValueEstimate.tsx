@@ -36,7 +36,7 @@ export const ValueEstimate = ({
       
       toast({
         title: "Value Estimated",
-        description: `Estimated at $${data.estimatedValue.toFixed(2)}`,
+        description: `Estimated at ₹${data.estimatedValue.toFixed(0)}`,
       });
     } catch (error) {
       console.error('Error estimating value:', error);
@@ -54,7 +54,7 @@ export const ValueEstimate = ({
     return (
       <Badge variant="secondary" className="gap-1">
         <Sparkles className="h-3 w-3" />
-        ${estimatedValue.toFixed(0)}
+        ₹{estimatedValue.toFixed(0)}
       </Badge>
     );
   }
