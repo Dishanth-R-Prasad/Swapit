@@ -15,6 +15,7 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Clock, MapPin, Package, User, IndianRupee } from 'lucide-react';
 import { toast } from 'sonner';
+import { offerSchema, getZodErrorMessage } from '@/lib/validations';
 
 interface AuctionItem {
   id: string;
@@ -157,12 +158,26 @@ const AuctionDetail = () => {
       toast.error('Please select an item to offer');
       return;
     }
-    if (offerType === 'cash' && (!cashAmount || parseFloat(cashAmount) <= 0)) {
+    
+    const parsedCashAmount = parseFloat(cashAmount) || 0;
+    
+    if (offerType === 'cash' && parsedCashAmount <= 0) {
       toast.error('Please enter a valid cash amount');
       return;
     }
-    if (offerType === 'both' && (!selectedItemId || !cashAmount || parseFloat(cashAmount) <= 0)) {
+    if (offerType === 'both' && (!selectedItemId || parsedCashAmount <= 0)) {
       toast.error('Please select an item and enter a cash amount');
+      return;
+    }
+    
+    // Validate offer data with zod
+    const validation = offerSchema.safeParse({
+      cashAmount: offerType !== 'item' ? parsedCashAmount : 0,
+      message: offerMessage,
+    });
+    
+    if (!validation.success) {
+      toast.error(getZodErrorMessage(validation.error));
       return;
     }
     
@@ -172,8 +187,8 @@ const AuctionDetail = () => {
         auction_listing_id: auction.id,
         offerer_user_id: user.id,
         offered_item_id: offerType !== 'cash' ? selectedItemId : null,
-        cash_amount: offerType !== 'item' ? parseFloat(cashAmount) : 0,
-        message: offerMessage,
+        cash_amount: validation.data.cashAmount,
+        message: validation.data.message || null,
         status: 'pending',
       });
 
@@ -387,7 +402,9 @@ const AuctionDetail = () => {
                             value={offerMessage}
                             onChange={(e) => setOfferMessage(e.target.value)}
                             rows={3}
+                            maxLength={1000}
                           />
+                          <p className="text-xs text-muted-foreground text-right">{offerMessage.length}/1000</p>
                         </div>
                         <Button 
                           onClick={handlePlaceOffer} 

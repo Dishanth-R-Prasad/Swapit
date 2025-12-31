@@ -12,6 +12,7 @@ import { Switch } from '@/components/ui/switch';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Upload, X } from 'lucide-react';
+import { listingSchema, getZodErrorMessage } from '@/lib/validations';
 
 const CreateListing = () => {
   const [title, setTitle] = useState('');
@@ -50,6 +51,23 @@ const CreateListing = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+    
+    // Validate inputs with zod
+    const validation = listingSchema.safeParse({
+      title: title.trim(),
+      category,
+      description: description.trim(),
+      price: isDonation ? 0 : parseFloat(price) || 0,
+      estimatedValue: estimatedValue ? parseFloat(estimatedValue) : null,
+      city: city.trim(),
+      pincode: pincode.trim() || undefined,
+    });
+    
+    if (!validation.success) {
+      toast.error(getZodErrorMessage(validation.error));
+      return;
+    }
+    
     setLoading(true);
 
     try {
@@ -77,15 +95,15 @@ const CreateListing = () => {
 
       const { error } = await supabase.from('items').insert({
         user_id: user.id,
-        title,
-        category,
-        description,
-        price: isDonation ? 0 : parseFloat(price),
-        estimated_value: estimatedValue ? parseFloat(estimatedValue) : null,
+        title: validation.data.title,
+        category: validation.data.category,
+        description: validation.data.description || null,
+        price: validation.data.price,
+        estimated_value: validation.data.estimatedValue,
         is_donation: isDonation,
         photo_url: photoUrl,
-        city,
-        pincode,
+        city: validation.data.city || null,
+        pincode: validation.data.pincode || null,
         status: 'active',
         is_auction: isAuction,
         auction_end_date: auctionEndDate,
@@ -154,6 +172,7 @@ const CreateListing = () => {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   required
+                  maxLength={100}
                 />
               </div>
 
@@ -180,7 +199,9 @@ const CreateListing = () => {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   rows={4}
+                  maxLength={2000}
                 />
+                <p className="text-xs text-muted-foreground text-right">{description.length}/2000</p>
               </div>
 
               <div className="flex items-center justify-between p-4 bg-muted rounded-lg">
@@ -228,19 +249,20 @@ const CreateListing = () => {
               </div>
 
               {!isDonation && (
-                <div className="space-y-2">
-                  <Label htmlFor="price">Base Price (₹)</Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    min="0"
-                    step="1"
-                    placeholder="0"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                  />
-                </div>
-              )}
+              <div className="space-y-2">
+                <Label htmlFor="price">Base Price (₹)</Label>
+                <Input
+                  id="price"
+                  type="number"
+                  min="0"
+                  max="100000000"
+                  step="1"
+                  placeholder="0"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                />
+              </div>
+            )}
 
               <div className="space-y-2">
                 <Label htmlFor="estimatedValue">Estimated Value (₹)</Label>
@@ -248,6 +270,7 @@ const CreateListing = () => {
                   id="estimatedValue"
                   type="number"
                   min="0"
+                  max="100000000"
                   step="1"
                   placeholder="Enter estimated market value"
                   value={estimatedValue}
@@ -266,6 +289,7 @@ const CreateListing = () => {
                     placeholder="Mumbai"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
+                    maxLength={100}
                   />
                 </div>
                 <div className="space-y-2">
@@ -274,7 +298,9 @@ const CreateListing = () => {
                     id="pincode"
                     placeholder="400001"
                     value={pincode}
-                    onChange={(e) => setPincode(e.target.value)}
+                    onChange={(e) => setPincode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    maxLength={6}
+                    pattern="[0-9]{6}"
                   />
                 </div>
               </div>

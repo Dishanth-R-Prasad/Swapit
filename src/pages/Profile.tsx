@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { Loader2, Upload } from 'lucide-react';
 import Navigation from '@/components/Navigation';
 import CarbonTracker from '@/components/CarbonTracker';
+import { profileSchema, getZodErrorMessage } from '@/lib/validations';
 
 export default function Profile() {
   const { user } = useAuth();
@@ -91,15 +92,29 @@ export default function Profile() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate inputs with zod
+    const validation = profileSchema.safeParse({
+      full_name: formData.full_name,
+      email: formData.email,
+      mobile_number: formData.mobile_number || undefined,
+      bio: formData.bio,
+    });
+    
+    if (!validation.success) {
+      toast.error(getZodErrorMessage(validation.error));
+      return;
+    }
+    
     setLoading(true);
 
     try {
       const { error } = await supabase
         .from('profiles')
         .update({
-          full_name: formData.full_name,
-          email: formData.email,
-          mobile_number: formData.mobile_number,
+          full_name: validation.data.full_name,
+          email: validation.data.email,
+          mobile_number: formData.mobile_number || null,
           bio: formData.bio,
           avatar_url: formData.avatar_url,
         })
@@ -162,6 +177,7 @@ export default function Profile() {
               value={formData.full_name}
               onChange={(e) => setFormData(prev => ({ ...prev, full_name: e.target.value }))}
               placeholder="Enter your full name"
+              maxLength={100}
             />
           </div>
 
@@ -182,8 +198,9 @@ export default function Profile() {
               id="mobile_number"
               type="tel"
               value={formData.mobile_number}
-              onChange={(e) => setFormData(prev => ({ ...prev, mobile_number: e.target.value }))}
+              onChange={(e) => setFormData(prev => ({ ...prev, mobile_number: e.target.value.replace(/\D/g, '').slice(0, 15) }))}
               placeholder="Enter your mobile number"
+              maxLength={15}
             />
           </div>
 
@@ -195,7 +212,9 @@ export default function Profile() {
               onChange={(e) => setFormData(prev => ({ ...prev, bio: e.target.value }))}
               placeholder="Tell us about yourself"
               rows={4}
+              maxLength={1000}
             />
+            <p className="text-xs text-muted-foreground text-right">{formData.bio.length}/1000</p>
           </div>
 
           <Button type="submit" className="w-full" disabled={loading}>

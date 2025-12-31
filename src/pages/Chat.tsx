@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
 import { ArrowLeft, Send } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
+import { messageSchema, getZodErrorMessage } from '@/lib/validations';
 
 interface Message {
   id: string;
@@ -130,14 +131,22 @@ const Chat = () => {
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim() || sending) return;
+    
+    // Validate message with zod
+    const validation = messageSchema.safeParse({ content: newMessage });
+    if (!validation.success) {
+      toast.error(getZodErrorMessage(validation.error));
+      return;
+    }
+    
+    if (sending) return;
 
     setSending(true);
     try {
       const { error } = await supabase.from('messages').insert({
         sender_id: user?.id,
         recipient_id: userId,
-        content: newMessage.trim(),
+        content: validation.data.content,
       });
 
       if (error) throw error;
@@ -234,10 +243,11 @@ const Chat = () => {
           <form onSubmit={handleSendMessage} className="flex gap-2">
             <Input
               value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
+              onChange={(e) => setNewMessage(e.target.value.slice(0, 5000))}
               placeholder="Type a message..."
               disabled={sending}
               className="flex-1"
+              maxLength={5000}
             />
             <Button type="submit" disabled={sending || !newMessage.trim()}>
               <Send className="w-4 h-4" />

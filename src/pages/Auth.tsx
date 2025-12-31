@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -7,7 +7,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { useAuth } from '@/hooks/useAuth';
-import { useEffect } from 'react';
+import { authLoginSchema, authSignupSchema, getZodErrorMessage } from '@/lib/validations';
+import { z } from 'zod';
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -29,22 +30,37 @@ const Auth = () => {
     setLoading(true);
 
     try {
+      // Validate inputs with zod
       if (isLogin) {
+        const validation = authLoginSchema.safeParse({ email, password });
+        if (!validation.success) {
+          toast.error(getZodErrorMessage(validation.error));
+          setLoading(false);
+          return;
+        }
+        
         const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
+          email: validation.data.email,
+          password: validation.data.password,
         });
         if (error) throw error;
         toast.success('Welcome back!');
         navigate('/');
       } else {
+        const validation = authSignupSchema.safeParse({ email, password, fullName });
+        if (!validation.success) {
+          toast.error(getZodErrorMessage(validation.error));
+          setLoading(false);
+          return;
+        }
+        
         const { error } = await supabase.auth.signUp({
-          email,
-          password,
+          email: validation.data.email,
+          password: validation.data.password,
           options: {
             emailRedirectTo: `${window.location.origin}/`,
             data: {
-              full_name: fullName,
+              full_name: validation.data.fullName,
             },
           },
         });
@@ -111,7 +127,8 @@ const Auth = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                minLength={6}
+                minLength={8}
+                maxLength={128}
               />
             </div>
             <Button type="submit" className="w-full" disabled={loading}>
