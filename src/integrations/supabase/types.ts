@@ -292,6 +292,60 @@ export type Database = {
         }
         Relationships: []
       }
+      swaps: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          initiator_confirmed: boolean
+          initiator_item_id: string | null
+          initiator_user_id: string
+          responder_confirmed: boolean
+          responder_item_id: string | null
+          responder_user_id: string
+          status: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          initiator_confirmed?: boolean
+          initiator_item_id?: string | null
+          initiator_user_id: string
+          responder_confirmed?: boolean
+          responder_item_id?: string | null
+          responder_user_id: string
+          status?: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          initiator_confirmed?: boolean
+          initiator_item_id?: string | null
+          initiator_user_id?: string
+          responder_confirmed?: boolean
+          responder_item_id?: string | null
+          responder_user_id?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "swaps_initiator_item_id_fkey"
+            columns: ["initiator_item_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "swaps_responder_item_id_fkey"
+            columns: ["responder_item_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -305,6 +359,7 @@ export type Database = {
         Args: { item_category: string }
         Returns: number
       }
+      complete_swap: { Args: { swap_id: string }; Returns: undefined }
       deduct_swap_credit: {
         Args: { _amount?: number; _user_id: string }
         Returns: boolean

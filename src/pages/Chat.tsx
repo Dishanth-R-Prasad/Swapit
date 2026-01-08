@@ -7,11 +7,11 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { toast } from 'sonner';
-import { ArrowLeft, Send } from 'lucide-react';
+import { ArrowLeft, Send, Handshake } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { messageSchema, getZodErrorMessage } from '@/lib/validations';
 import { formatDatabaseError } from '@/lib/errorHandler';
-
+import { SwapCompletion } from '@/components/SwapCompletion';
 interface Message {
   id: string;
   sender_id: string;
@@ -33,6 +33,7 @@ const Chat = () => {
   const [otherUserProfile, setOtherUserProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
+  const [showSwapPanel, setShowSwapPanel] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -194,9 +195,27 @@ const Chat = () => {
             <h1 className="text-xl font-semibold">
               {otherUserProfile?.full_name || 'Unknown User'}
             </h1>
+            <Button
+              variant="outline"
+              size="sm"
+              className="ml-auto"
+              onClick={() => setShowSwapPanel(!showSwapPanel)}
+            >
+              <Handshake className="w-4 h-4 mr-2" />
+              Swap
+            </Button>
           </div>
         </div>
       </div>
+
+      {/* Swap Completion Panel */}
+      {showSwapPanel && user && userId && (
+        <div className="border-b border-border bg-muted/30">
+          <div className="container max-w-4xl mx-auto px-4 py-4">
+            <SwapCompletion currentUserId={user.id} otherUserId={userId} />
+          </div>
+        </div>
+      )}
 
       {/* Messages */}
       <div className="flex-1 overflow-y-auto">
