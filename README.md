@@ -1,4 +1,4 @@
-# SwapIt – Card Deal Web Application
+# SwapIt – A Barter System App
 
 SwapIt is a frontend web application that demonstrates a card-based interaction system for exchanging or dealing items.  
 The project focuses on clean UI design, component-based architecture, and modern frontend development practices.
