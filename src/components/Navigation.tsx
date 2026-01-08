@@ -1,16 +1,13 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Home, PlusCircle, Heart, Package, LogOut, User, MessageSquare, Gavel, Coins } from 'lucide-react';
+import { Home, PlusCircle, Heart, Package, LogOut, User, MessageSquare, Gavel } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { useSwapCredits } from '@/hooks/useSwapCredits';
 import { Button } from './ui/button';
-import { Badge } from './ui/badge';
 import { toast } from 'sonner';
 
 const Navigation = () => {
   const location = useLocation();
   const { user } = useAuth();
-  const { credits, loading: creditsLoading } = useSwapCredits();
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -53,11 +50,6 @@ const Navigation = () => {
             </div>
           </div>
           <div className="hidden md:flex items-center gap-4">
-            <Badge variant="outline" className="flex items-center gap-1.5 px-3 py-1.5">
-              <Coins className="w-4 h-4 text-primary" />
-              <span className="font-semibold">{creditsLoading ? '...' : credits}</span>
-              <span className="text-muted-foreground text-xs">credits</span>
-            </Badge>
             <Button variant="ghost" size="sm" onClick={handleLogout}>
               <LogOut className="w-4 h-4 mr-2" />
               Logout
@@ -68,14 +60,6 @@ const Navigation = () => {
       
       {/* Mobile bottom nav */}
       <div className="flex md:hidden items-center justify-around pb-safe">
-        {/* Credits badge for mobile */}
-        <div className="flex flex-col items-center gap-1 py-2 px-2">
-          <div className="flex items-center gap-1 bg-primary/10 rounded-full px-2 py-0.5">
-            <Coins className="w-4 h-4 text-primary" />
-            <span className="text-xs font-semibold text-primary">{creditsLoading ? '...' : credits}</span>
-          </div>
-          <span className="text-xs text-muted-foreground">Credits</span>
-        </div>
         {navItems.slice(0, 4).map((item) => (
           <Link
             key={item.path}
