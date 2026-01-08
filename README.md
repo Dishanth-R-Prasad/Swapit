@@ -1,70 +1,57 @@
-# Welcome to your Lovable project
+# SwapIt – Card Deal Web Application
 
-## Project info
+SwapIt is a frontend web application that demonstrates a card-based interaction system for exchanging or dealing items.  
+The project focuses on clean UI design, component-based architecture, and modern frontend development practices.
 
-**URL**: https://lovable.dev/projects/963cdb00-02ef-4186-a4cd-927d2120f6d3
+This application was built as part of my academic work to understand how real-world web applications are structured and developed using modern tools.
 
-## How can I edit this code?
+---
 
-There are several ways of editing your application.
+## 🎯 Project Objective
 
-**Use Lovable**
+The goal of this project is to design and implement a responsive, user-friendly card interface that can be used for item exchange or deal-based workflows.  
+The emphasis is on frontend logic, UI behavior, and maintainable code structure rather than backend complexity.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/963cdb00-02ef-4186-a4cd-927d2120f6d3) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+## 🚀 Features
 
-**Use your preferred IDE**
+- Card-based UI for displaying items  
+- Responsive layout for different screen sizes  
+- Clean component structure using React  
+- Styled using utility-first CSS  
+- Runs completely on the local machine  
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+---
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🧠 Design Decisions
 
-Follow these steps:
+- Chose **Vite** for faster development and build performance  
+- Used **React with TypeScript** to maintain type safety and scalability  
+- Implemented **Tailwind CSS** for rapid UI styling  
+- Focused only on frontend logic to clearly demonstrate UI and component design  
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+---
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## 🛠 Technologies Used
 
-# Step 3: Install the necessary dependencies.
-npm i
+- **Vite** – Development & build tool  
+- **React** – UI library  
+- **TypeScript** – Type-safe JavaScript  
+- **Tailwind CSS** – Styling framework  
+- **shadcn/ui** – Reusable UI components  
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+---
+
+## 📦 Installation & Setup
+
+To run this project locally:
+
+```bash
+git clone https://github.com/vasukinigam74-glitch/swapit-card-deal.git
+cd swapit-card-deal
+npm install
 npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/963cdb00-02ef-4186-a4cd-927d2120f6d3) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
 
 Yes, you can!
 
